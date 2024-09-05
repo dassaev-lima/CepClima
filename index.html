@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Consulta de Clima e Endereço</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-100 text-gray-900 h-screen flex items-center">
+    <div class="container mx-auto p-6">
+      <h1 class="text-3xl font-bold text-center mb-6">
+        Consulta de Clima e Endereço
+      </h1>
+      <p class="text-center mb-4">
+        Digite um CEP para obter informações sobre o endereço e o clima atual.
+      </p>
+      <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
+        <form id="cepForm" class="mb-4">
+          <div class="mb-4">
+            <label for="cep" class="block text-sm font-medium text-gray-700"
+              >CEP:</label
+            >
+            <input
+              type="text"
+              id="cep"
+              name="cep"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="Digite o CEP"
+            />
+          </div>
+          <button
+            type="submit"
+            class="w-full bg-indigo-500 text-white py-2 px-4 rounded hover:bg-indigo-600"
+          >
+            Consultar
+          </button>
+        </form>
+        <div id="results" class="hidden">
+          <h2 class="text-2xl font-bold mb-4">Resultado:</h2>
+          <div class="bg-gray-100 p-4 rounded-lg shadow-md">
+            <div id="endereco" class="mb-4">
+              <h3 class="text-xl font-semibold">Endereço:</h3>
+              <p id="logradouro"></p>
+              <p id="bairro"></p>
+              <p id="localidade"></p>
+            </div>
+            <div id="clima" class="mb-4">
+              <h3 class="text-xl font-semibold">Clima:</h3>
+              <div class="flex items-center">
+                <img
+                  id="climaIcon"
+                  class="w-12 h-12 mr-4"
+                  alt="Ícone do clima"
+                />
+                <p id="descricao"></p>
+              </div>
+              <p id="temperatura"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("cepForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const cep = document.getElementById("cep").value;
+          const results = document.getElementById("results");
+          try {
+            const response = await fetch(
+              `http://localhost:3000/endereco/${cep}`
+            );
+            const data = await response.json();
+
+            document.getElementById(
+              "logradouro"
+            ).innerText = `Logradouro: ${data.endereco.logradouro}`;
+            document.getElementById(
+              "bairro"
+            ).innerText = `Bairro: ${data.endereco.bairro}`;
+            document.getElementById(
+              "localidade"
+            ).innerText = `Localidade: ${data.endereco.localidade}, ${data.endereco.uf}`;
+
+            document.getElementById(
+              "descricao"
+            ).innerText = `Descrição: ${data.clima.weather[0].description}`;
+            document.getElementById(
+              "temperatura"
+            ).innerText = `Temperatura: ${data.clima.main.temp}°C`;
+
+            const climaIconMap = {
+              "clear sky": "ensolarado.png",
+              "few clouds": "parcialmente-nublado.png",
+              "scattered clouds": "nublado.png",
+              "broken clouds": "muito-nublado.png",
+              "shower rain": "chuva.png",
+              rain: "chuva.png",
+              thunderstorm: "tempestade.png",
+              snow: "neve.png",
+              mist: "nevoeiro.png",
+            };
+
+            const descricaoClima =
+              data.clima.weather[0].description.toLowerCase();
+            document.getElementById("climaIcon").src =
+              climaIconMap[descricaoClima] || "desconhecido.png";
+
+            results.classList.remove("hidden");
+          } catch (error) {
+            alert(
+              "Erro ao buscar informações. Por favor, verifique o CEP e tente novamente."
+            );
+          }
+        });
+    </script>
+  </body>
+</html>
