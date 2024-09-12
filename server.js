@@ -1,8 +1,10 @@
 // server.js
 require("dotenv").config();
 const express = require("express");
+const swaggerUi = require("swagger-ui-express");
+const fs = require("fs");
+const path = require("path");
 const cors = require("cors");
-
 const viaCepService = require("./services/viaCepService");
 const openWeatherService = require("./services/openWeatherService");
 
@@ -10,6 +12,14 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
+
+// Carrega o arquivo swagger.json
+const swaggerDocument = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "docs", "swagger.json"), "utf8")
+);
+
+// Usa o swagger-ui-express para servir a documentação na rota /api-docs
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get("/endereco/:cep", async (req, res) => {
   const cep = req.params.cep;
@@ -40,5 +50,6 @@ app.get("/endereco/:cep", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Servidor rodando na porta: ${PORT}`);
+  console.log("Documentação disponível em http://localhost:3000/api-docs");
 });
