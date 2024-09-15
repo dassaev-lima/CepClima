@@ -1,7 +1,7 @@
 // viaCepService.js
 const axios = require("axios");
 
-const getEndereco = async (cep) => {
+const getAddress = async (cep) => {
   try {
     const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
     return response.data;
@@ -11,5 +11,5 @@ const getEndereco = async (cep) => {
 };
 
 module.exports = {
-  getEndereco,
+  getAddress,
 };

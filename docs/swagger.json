@@ -1,0 +1,43 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "ClimaCep",
+    "version": "1.0.0",
+    "description": "API gateway para consumo de microserviços usando websocket"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Servidor local"
+    }
+  ],
+  "paths": {
+    "/address/{cep}": {
+      "get": {
+        "summary": "Retorna um objeto com dados de localidade e clima",
+        "parameters": [
+          {
+            "name": "cep",
+            "in": "path",
+            "required": true,
+            "description": "CEP a ser consultado",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista dados de localidade e clima"
+          },
+          "404": {
+            "description": "CEP não encontrado"
+          },
+          "500": {
+            "description": "Erro ao buscar informações"
+          }
+        }
+      }
+    }
+  }
+}

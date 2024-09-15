@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ClimaCep</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div
+      class="w-full max-w-md bg-white shadow-lg rounded-lg flex flex-col max-h-96"
+    >
+      <!-- Header -->
+      <div class="bg-red-400 text-white p-4 rounded-t-lg">
+        <h2 class="text-lg font-semibold">ClimaCep</h2>
+      </div>
+
+      <!-- Chat Box -->
+      <div
+        id="chat-box"
+        class="flex-1 p-4 overflow-y-auto"
+        style="height: 300px"
+      ></div>
+
+      <div class="p-4 bg-gray-100 rounded-b-lg">
+        <form id="chat-form" class="flex">
+          <input
+            type="text"
+            id="chat-input"
+            class="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Digite uma mensagem..."
+            required
+          />
+          <button
+            type="submit"
+            class="ml-2 px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-red-500 transition-all"
+          >
+            Enviar
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const socket = new WebSocket("ws://localhost:8080");
+
+      const chatForm = document.getElementById("chat-form");
+      const chatInput = document.getElementById("chat-input");
+      const chatBox = document.getElementById("chat-box");
+
+      // Enviar mensagem via WebSocket quando o formulário for enviado
+      chatForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const message = chatInput.value;
+        if (message) {
+          socket.send(message);
+          addMessage("Você", message); // Exibe a mensagem no chat
+          chatInput.value = "";
+        }
+      });
+
+      // Receber mensagens do servidor via WebSocket
+      socket.onmessage = (event) => {
+        const message = event.data;
+        addMessage("Servidor", message);
+      };
+
+      // Função para adicionar mensagens no chat box
+      function addMessage(user, message) {
+        const messageElement = document.createElement("div");
+        messageElement.classList.add("flex", "items-center", "mb-4");
+
+        messageElement.innerHTML = `
+                <div class="bg-gray-200 rounded-full h-8 w-8 flex items-center justify-center text-gray-600 font-semibold">
+                    ${user[0].toUpperCase()}
+                </div>
+                <div class="ml-2 bg-gray-200 p-2 rounded-lg text-gray-700">
+                    ${message}
+                </div>
+            `;
+
+        chatBox.appendChild(messageElement);
+        chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll para a última mensagem
+      }
+    </script>
+  </body>
+</html>
