@@ -12,7 +12,7 @@
     }
   ],
   "paths": {
-    "/endereco/{cep}": {
+    "/address/{cep}": {
       "get": {
         "summary": "Retorna um objeto com dados de localidade e clima",
         "parameters": [
