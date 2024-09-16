@@ -14,6 +14,7 @@
     <img src="https://img.shields.io/static/v1?label=Node.js&message=Express&color=339933&style=for-the-badge&logo=node.js" />
     <img src="https://img.shields.io/static/v1?label=HTTP%20Client&message=Axios&color=5A29E4&style=for-the-badge&logo=axios" />
     <img src="https://img.shields.io/static/v1?label=WebSocket&message=Real-time&color=010101&style=for-the-badge&logo=websocket" />
+    </div>
 </div>
 
 ## :spiral_notepad: Sobre o projeto
